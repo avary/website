@@ -1,0 +1,29 @@
+{{template "base"}}
+
+{{define "title"}} Login / Bloop {{end}}
+
+{{define "body"}} 
+
+<ul>
+    <li><a href="/authors">Authors</a></li>
+    <li><a href="/loops">Loops</a></li>
+    <li><a href="/login">Log In</a></li>
+</ul>
+
+<div>
+    <form action="#">
+      <label for="emailusername">Email / Username</label>
+      <input type="text" id="emailusername" name="emailusername" placeholder="Your email or username">
+  
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Your password">
+  
+      <input type="submit" value="Log In">
+    </form>
+</div>
+
+<ul>
+  <li><a href="/signup">Get Started</a></li>
+</ul>
+
+{{end}}
