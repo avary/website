@@ -2,7 +2,7 @@ FROM golang:latest
 
 LABEL maintainer="Bilal Khan"
 
-WORKDIR /bloop
+WORKDIR /website
 
 COPY go.mod go.sum
 
