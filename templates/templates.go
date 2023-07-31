@@ -14,9 +14,9 @@ var (
 	HomeTmpl = MakeTemplate("../website/html/home.html")
 
 	// User templates
-	SignupTmpl  = MakeTemplate("../website/html/signup.html")
-	LoginTmpl   = MakeTemplate("../website/html/login.html")
-	LogoutTmpl  = MakeTemplate("../website/html/logout.html")
+	// SignupTmpl  = MakeTemplate("../website/html/signup.html")
+	// LoginTmpl   = MakeTemplate("../website/html/login.html")
+	// LogoutTmpl  = MakeTemplate("../website/html/logout.html")
 	AccountTmpl = MakeTemplate("../website/html/account.html")
 
 	// Service templates

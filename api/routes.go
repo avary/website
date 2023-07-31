@@ -1,12 +1,14 @@
 package api
 
 import (
+	"encoding/gob"
 	"net/http"
 
 	"github.com/ibilalkayy/Bloop/website/handlers/account"
 	"github.com/ibilalkayy/Bloop/website/handlers/authors"
 	"github.com/ibilalkayy/Bloop/website/handlers/billing"
 	"github.com/ibilalkayy/Bloop/website/handlers/books"
+	"github.com/ibilalkayy/Bloop/website/handlers/callback"
 	"github.com/ibilalkayy/Bloop/website/handlers/cart"
 	"github.com/ibilalkayy/Bloop/website/handlers/checkout"
 	"github.com/ibilalkayy/Bloop/website/handlers/home"
@@ -18,11 +20,14 @@ import (
 )
 
 func SetupRoutes() {
+	gob.Register(callback.User{})
+
 	http.HandleFunc("/", middleware.ErrorHandling(home.HomePage))
 	http.HandleFunc("/loops", middleware.ErrorHandling(loops.LoopsPage))
 	http.HandleFunc("/signup", middleware.ErrorHandling(signup.SignupPage))
 	http.HandleFunc("/login", middleware.ErrorHandling(login.LoginPage))
 	http.HandleFunc("/logout", middleware.ErrorHandling(logout.LogoutPage))
+	http.HandleFunc("/callback", callback.CallbackPage)
 
 	http.HandleFunc("/account", middleware.ErrorHandling(account.AccountPage))
 	http.HandleFunc("/authors", middleware.ErrorHandling(authors.AuthorsPage))
