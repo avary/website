@@ -57,7 +57,7 @@ func CallbackPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Redirecting to /account") // New logging line
-	http.Redirect(w, r, "/account", http.StatusSeeOther)
+	log.Println("Redirecting to home") // New logging line
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
