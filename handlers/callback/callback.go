@@ -1,63 +1,66 @@
 package callback
 
 import (
-	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"net/url"
 
-	"github.com/gorilla/sessions"
 	"github.com/ibilalkayy/Bloop/website/auth"
 )
 
-type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Pic   string `json:"picture"`
+type tokenResponse struct {
+	AccessToken string `json:"access_token"`
+	IDToken     string `json:"id_token"`
+	Scope       string `json:"scope"`
+	ExpiresIn   int    `json:"expires_in"`
 }
 
-var Store = sessions.NewCookieStore([]byte("1234"))
-
-func CallbackPage(w http.ResponseWriter, r *http.Request) {
-	log.Println("CallbackPage called") // New logging line
+func CallbackPage(w http.ResponseWriter, r *http.Request) error {
 	code := r.URL.Query().Get("code")
+	if code == "" {
+		http.Error(w, "No code returned from Auth0", http.StatusBadRequest)
+		return nil
+	}
 
-	token, err := auth.Conf.Exchange(context.Background(), code)
+	// Exchange the code for tokens
+	_, err := exchangeCodeForToken(code)
 	if err != nil {
-		log.Println("Error exchanging code:", err) // New logging line
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		http.Error(w, "Error exchanging code for token", http.StatusInternalServerError)
+		return err
 	}
 
-	response, err := http.Get("https://" + auth.Auth0Domain + "/userinfo?access_token=" + token.AccessToken)
-	if err != nil {
-		log.Println("Error getting user info:", err) // New logging line
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	defer response.Body.Close()
-
-	data, _ := ioutil.ReadAll(response.Body)
-	var user User
-	json.Unmarshal(data, &user)
-
-	session, err := Store.Get(r, "session-name")
-	if err != nil {
-		log.Println("Error getting session:", err) // New logging line
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	session.Values["user"] = user
-	if err := session.Save(r, w); err != nil { // Here we handle any errors from saving the session
-		log.Println("Error saving session:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	log.Println("Redirecting to home") // New logging line
+	// Here, you'd store the token securely, then redirect to the desired page
+	// For simplicity, we're just redirecting
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return nil
+}
 
+func exchangeCodeForToken(code string) (*tokenResponse, error) {
+	// Construct the request payload
+	payload := url.Values{}
+	payload.Set("grant_type", "authorization_code")
+	payload.Set("client_id", auth.Auth0ClientID)
+	payload.Set("client_secret", auth.Auth0ClientSecret)
+	payload.Set("code", code)
+	payload.Set("redirect_uri", "http://localhost:8080/callback")
+
+	resp, err := http.PostForm("https://"+auth.Auth0Domain+"/oauth/token", payload)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var token tokenResponse
+	err = json.Unmarshal(body, &token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &token, nil
 }

@@ -1,14 +1,18 @@
 package signup
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ibilalkayy/Bloop/website/auth"
-	"golang.org/x/oauth2"
 )
 
 func SignupPage(w http.ResponseWriter, r *http.Request) error {
-	url := auth.Conf.AuthCodeURL("state", oauth2.SetAuthURLParam("screen_hint", "signup"), oauth2.AccessTypeOffline)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	// Constructing the URL
+	redirectURL := fmt.Sprintf(
+		"https://%s/authorize?response_type=code&client_id=%s&redirect_uri=%s&scope=openid profile email&screen_hint=signup",
+		auth.Auth0Domain, auth.Auth0ClientID, auth.Auth0CallbackURL)
+
+	http.Redirect(w, r, redirectURL, http.StatusSeeOther)
 	return nil
 }

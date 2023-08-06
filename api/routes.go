@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/gob"
 	"net/http"
 
 	"github.com/ibilalkayy/Bloop/website/handlers/account"
@@ -20,14 +19,12 @@ import (
 )
 
 func SetupRoutes() {
-	gob.Register(callback.User{})
-
 	http.HandleFunc("/", middleware.ErrorHandling(home.HomePage))
 	http.HandleFunc("/loops", middleware.ErrorHandling(loops.LoopsPage))
 	http.HandleFunc("/signup", middleware.ErrorHandling(signup.SignupPage))
 	http.HandleFunc("/login", middleware.ErrorHandling(login.LoginPage))
 	http.HandleFunc("/logout", middleware.ErrorHandling(logout.LogoutPage))
-	http.HandleFunc("/callback", callback.CallbackPage)
+	http.HandleFunc("/callback", middleware.ErrorHandling(callback.CallbackPage))
 
 	http.HandleFunc("/account", middleware.ErrorHandling(account.AccountPage))
 	http.HandleFunc("/authors", middleware.ErrorHandling(authors.AuthorsPage))
