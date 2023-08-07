@@ -26,7 +26,7 @@ func SetupRoutes() {
 	http.HandleFunc("/logout", middleware.ErrorHandling(logout.LogoutPage))
 	http.HandleFunc("/callback", middleware.ErrorHandling(callback.CallbackPage))
 
-	http.HandleFunc("/account", middleware.ErrorHandling(account.AccountPage))
+	http.HandleFunc("/account", middleware.AuthenticatedOnly(middleware.ErrorHandling(account.AccountPage)))
 	http.HandleFunc("/authors", middleware.ErrorHandling(authors.AuthorsPage))
 	http.HandleFunc("/billing", middleware.ErrorHandling(billing.BillingPage))
 
