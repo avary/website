@@ -3,6 +3,8 @@ package middleware
 import (
 	"log"
 	"net/http"
+
+	"github.com/ibilalkayy/Bloop/website/sessions"
 )
 
 // Type to be used as a parameter in a function
@@ -17,4 +19,15 @@ func ErrorHandling(h MyHandlerFunc) http.HandlerFunc {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	})
+}
+
+func AuthenticatedOnly(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		token := sessions.GetSession(r)
+		if token == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
 }

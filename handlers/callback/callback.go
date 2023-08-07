@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/ibilalkayy/Bloop/website/auth"
+	"github.com/ibilalkayy/Bloop/website/sessions"
 )
 
 type tokenResponse struct {
@@ -23,12 +24,14 @@ func CallbackPage(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	// Exchange the code for tokens
-	_, err := exchangeCodeForToken(code)
+	tokenResp, err := exchangeCodeForToken(code)
 	if err != nil {
 		http.Error(w, "Error exchanging code for token", http.StatusInternalServerError)
 		return err
 	}
+
+	// Store the token in the session
+	sessions.SetSession(tokenResp.AccessToken, w, r)
 
 	// Here, you'd store the token securely, then redirect to the desired page
 	// For simplicity, we're just redirecting
