@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/ibilalkayy/Bloop/website/auth"
-	"github.com/ibilalkayy/Bloop/website/sessions"
+	"github.com/ibilalkayy/Bloop/website/session"
 )
 
 func LoginPage(w http.ResponseWriter, r *http.Request) error {
 	// Check if user is already logged in
-	token := sessions.GetSession(r)
+	token := session.GetSession(r)
 	if token != "" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return nil
