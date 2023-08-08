@@ -33,7 +33,7 @@ func SetupRoutes() {
 	http.HandleFunc("/books", middleware.ErrorHandling(books.BooksPage))
 	http.HandleFunc("/cart", middleware.ErrorHandling(cart.CartPage))
 	http.HandleFunc("/checkout", middleware.ErrorHandling(checkout.CheckoutPage))
-	http.HandleFunc("/authors-signup", middleware.ErrorHandling(authors.AuthorsSignupPage))
+	http.HandleFunc("/authors-signup", middleware.AuthenticatedOnly(middleware.ErrorHandling(authors.AuthorsSignupPage)))
 
 	fileServer := http.FileServer(http.Dir("./css/"))
 	http.Handle("/css/", http.StripPrefix("/css", fileServer))

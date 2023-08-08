@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	"github.com/ibilalkayy/Bloop/website/auth"
-	"github.com/ibilalkayy/Bloop/website/sessions"
+	"github.com/ibilalkayy/Bloop/website/session"
 )
 
 type tokenResponse struct {
@@ -31,7 +31,7 @@ func CallbackPage(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// Store the token in the session
-	sessions.SetSession(tokenResp.AccessToken, w, r)
+	session.SetSession(tokenResp.AccessToken, w, r)
 
 	// Here, you'd store the token securely, then redirect to the desired page
 	// For simplicity, we're just redirecting

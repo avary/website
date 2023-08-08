@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/ibilalkayy/Bloop/website/auth"
-	"github.com/ibilalkayy/Bloop/website/sessions"
+	"github.com/ibilalkayy/Bloop/website/session"
 )
 
 func LogoutPage(w http.ResponseWriter, r *http.Request) error {
 	// Clear the session
-	sessions.ClearSession(w, r)
+	session.ClearSession(w, r)
 
 	// Clear the Auth0 session by redirecting to the Auth0 logout endpoint
 	redirectURL := fmt.Sprintf("https://%s/v2/logout?client_id=%s&returnTo=%s",

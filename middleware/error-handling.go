@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ibilalkayy/Bloop/website/sessions"
+	"github.com/ibilalkayy/Bloop/website/session"
 )
 
 // Type to be used as a parameter in a function
@@ -23,7 +23,7 @@ func ErrorHandling(h MyHandlerFunc) http.HandlerFunc {
 
 func AuthenticatedOnly(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		token := sessions.GetSession(r)
+		token := session.GetSession(r)
 		if token == "" {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
