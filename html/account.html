@@ -1,4 +1,4 @@
-{{template "base"}}
+{{template "base" .}}
 
 {{define "title"}} Account / Bloop {{end}}
 
@@ -239,6 +239,9 @@
   </div>
 
   <ul>
+    <p>Username: {{ .Username }}</p>
+    <p>Email: {{ .Email }}</p>
+
       <li><a href="/signup">Get Started</a></li>
   </ul> 
 

@@ -30,8 +30,14 @@ func CallbackPage(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	// Store the token in the session
-	session.SetSession(tokenResp.AccessToken, w, r)
+	userProfile, err := getUserProfile(tokenResp.AccessToken)
+	if err != nil {
+		http.Error(w, "Error fetching user profile", http.StatusInternalServerError)
+		return err
+	}
+
+	// Store the token, username, and email in the session
+	session.SetSession(tokenResp.AccessToken, userProfile["nickname"].(string), userProfile["email"].(string), w, r)
 
 	// Here, you'd store the token securely, then redirect to the desired page
 	// For simplicity, we're just redirecting
@@ -66,4 +72,19 @@ func exchangeCodeForToken(code string) (*tokenResponse, error) {
 	}
 
 	return &token, nil
+}
+
+func getUserProfile(accessToken string) (map[string]interface{}, error) {
+	resp, err := http.Get("https://" + auth.Auth0Domain + "/userinfo?access_token=" + accessToken)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var profile map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&profile); err != nil {
+		return nil, err
+	}
+
+	return profile, nil
 }
