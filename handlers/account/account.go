@@ -21,11 +21,10 @@ func AccountPage(w http.ResponseWriter, r *http.Request) error {
 		Email:    email,
 	}
 
-	db, err := postgres.ConnectToDB()
+	err := postgres.ExecuteSQLQuery(1)
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		log.Fatalf("Failed to execute query: %v", err)
 	}
-	defer db.Close()
 
 	return templates.AccountTmpl.Execute(w, data)
 }
