@@ -39,37 +39,34 @@ func ConnectToDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func ExecuteSQLQuery(queryNumber int) error {
+func ExecuteQueryFromSQLFile(queryNumber int) (*sql.DB, error) {
 	// Connect to the database
 	db, err := ConnectToDB()
 	if err != nil {
-		return fmt.Errorf("Failed to connect to the database: %v", err)
+		return nil, fmt.Errorf("Failed to connect to the database: %v", err)
 	}
-	defer db.Close()
 
 	// Read the content of the SQL file
 	content, err := ioutil.ReadFile("db/postgres/db.SQL")
 	if err != nil {
-		return fmt.Errorf("Error reading SQL file: %v", err)
+		return nil, fmt.Errorf("Error reading SQL file: %v", err)
 	}
 
 	// Split the content by semicolon to get individual SQL statements
 	queries := strings.Split(string(content), ";")
 
 	if queryNumber <= 0 || queryNumber > len(queries) {
-		return fmt.Errorf("Invalid query number. There are %d queries in the file", len(queries))
+		return nil, fmt.Errorf("Invalid query number. There are %d queries in the file", len(queries))
 	}
 
 	query := strings.TrimSpace(queries[queryNumber-1])
 	if query == "" {
-		return fmt.Errorf("Query %d is empty", queryNumber)
+		return nil, fmt.Errorf("Query %d is empty", queryNumber)
 	}
 
 	_, err = db.Exec(query)
 	if err != nil {
-		return fmt.Errorf("Error executing query %d: %v", queryNumber, err)
+		return nil, fmt.Errorf("Error executing query %d: %v", queryNumber, err)
 	}
-	fmt.Printf("Executed query %d successfully!\n", queryNumber)
-
-	return nil
+	return db, nil
 }

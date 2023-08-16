@@ -1,7 +1,6 @@
-CREATE TABLE IF NOT EXISTS Signup (
+CREATE TABLE IF NOT EXISTS Account (
     id SERIAL PRIMARY KEY,
-    emails VARCHAR(255) NOT NULL UNIQUE,
-    passwords VARCHAR(255) NOT NULL,
-    fullnames VARCHAR(255) NOT NULL,
-    accountnames VARCHAR(255) NOT NULL
+    names VARCHAR(255) NOT NULL UNIQUE,
+    countries VARCHAR(255) NOT NULL,
+    shipping_addresses VARCHAR(255) NOT NULL
 );
