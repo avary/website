@@ -7,6 +7,8 @@ type UserInfoResponse struct {
 
 type AccountDetails struct {
 	Name            string
+	Username        string
+	Email           string
 	Country         string
 	ShippingAddress string
 }

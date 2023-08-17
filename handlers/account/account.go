@@ -27,10 +27,12 @@ func AccountPage(w http.ResponseWriter, r *http.Request) error {
 	} else if r.Method == "POST" {
 		accountDetails := model.AccountDetails{
 			Name:            r.FormValue("name"),
+			Username:        username,
+			Email:           email,
 			Country:         r.FormValue("country"),
 			ShippingAddress: r.FormValue("shipping-address"),
 		}
-		values := []string{accountDetails.Name, accountDetails.Country, accountDetails.ShippingAddress}
+		values := []string{accountDetails.Name, accountDetails.Username, accountDetails.Email, accountDetails.Country, accountDetails.ShippingAddress}
 		err := postgres.InsertIntoAccount(values)
 		if err != nil {
 			log.Fatalf("Failed to insert values: %v", err)
